@@ -6,14 +6,14 @@ const Background = ({ path }) => {
   return (
     <div className="Background">
       <div className="Overlay"></div>
-      <div className="container mx-auto text-lg lg:px-12 space-y-3 Content text-white">
+      <div className="container mx-auto text-lg lg:px-12 px-3 space-y-3 Content text-white">
         <div>
           <Breadcrumb
             items={[
               {
                 href: "/",
                 title: (
-                  <i className="fa-solid fa-house"></i>
+                  <i className="fa-solid fa-house text-white"></i>
                 ),
               },
               ...path

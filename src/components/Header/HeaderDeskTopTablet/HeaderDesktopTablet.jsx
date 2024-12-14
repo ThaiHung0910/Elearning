@@ -9,6 +9,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import { getCourseCategoryAction } from "../../../redux/courseReducer/courseSlice";
 import { logo } from "../../../assets/img/js/img";
 import DropdownCustom from "../../Dropdown/DropdownCustom";
+import { handleSubmitSearch } from "../../../utils";
 
 const HeaderDesktopTablet = () => {
   const scrollDirection = ScrollHeader();
@@ -51,14 +52,11 @@ const HeaderDesktopTablet = () => {
     });
   };
 
-  const handleSubmitSearch = (e) => {
-    e.preventDefault();
-    if (keyInput.current.value !== "") {
-      navigate(`/timkiem/${keyInput.current.value}`);
-      keyInput.current.value = "";
-      setSearchVisible(false);
-    }
-  };
+  let handleSubmit = (e) => {
+    handleSubmitSearch(e, keyInput, navigate, () => {
+      setSearchVisible(false)
+    })
+  }
 
   useEffect(() => {
     fetchApi();
@@ -106,7 +104,7 @@ const HeaderDesktopTablet = () => {
 
       {searchVisible && (
         <form
-          onSubmit={handleSubmitSearch}
+          onSubmit={handleSubmit}
           className="HeaderSearch lg:px-12 container mx-auto px-3 flex mt-3"
         >
           <input

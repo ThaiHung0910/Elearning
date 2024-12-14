@@ -9,14 +9,11 @@ const ModalContent = ({ course, imageNotFound, navigate, avatar, name }) => {
       <div className="w-2/3 ">
         <div className="flex space-x-4 py-5 border-b justify-between">
           <div
-            onClick={() => {
-              navigate(`/chitiet/${course.maKhoaHoc}`);
-            }}
-            className="w-1/2 h-44 overflow-hidden cursor-pointer"
+            className="w-1/2 h-44 overflow-hidden"
           >
             <img
               src={course.hinhAnh}
-              className="w-full hover:w-[105%] h-full hover:h-[105%] object-cover rounded duration-200"
+              className="w-full  h-full  object-cover rounded"
               onError={(e) => {
                 e.target.onerror = null;
                 e.target.src = imageNotFound;
@@ -30,7 +27,7 @@ const ModalContent = ({ course, imageNotFound, navigate, avatar, name }) => {
               onClick={() => {
                 navigate(path);
               }}
-              className="font-bold text-2xl cursor-pointer"
+              className="font-bold text-2xl"
             >
               {course.tenKhoaHoc}
             </h1>
@@ -41,7 +38,7 @@ const ModalContent = ({ course, imageNotFound, navigate, avatar, name }) => {
         </div>
         <div className="mt-3">
           <ul className="flex">
-            <li className="mr-7 pr-7 border-r-slate-300 border-r-2 relative">
+            <li className="mr-7 pr-7  border-r-2 relative">
               <div className="flex items-center">
                 <div className="mr-2">
                   <img
@@ -57,7 +54,7 @@ const ModalContent = ({ course, imageNotFound, navigate, avatar, name }) => {
                 </div>
               </div>
             </li>
-            <li className="mr-7 pr-7 border-r-slate-300 border-r-2">
+            <li className="mr-7 pr-7  border-r-2">
               <div className="flex flex-col items-center h-full justify-center">
                 <label>Học viên</label>
                 <p className="font-bold">27</p>

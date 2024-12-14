@@ -1,7 +1,11 @@
-.ant-modal, .ant-card, .ant-breadcrumb, .ant-space, .ant-dropdown {
-  font-family: "Roboto", sans-serif !important; 
+.ant-modal,
+.ant-card,
+.ant-breadcrumb,
+.ant-space,
+.ant-dropdown,
+.ant-popconfirm {
+  font-family: "Roboto", sans-serif !important;
 }
-
 
 .CardGlobal.ant-card {
   .ant-card-body {
@@ -9,10 +13,7 @@
   }
 }
 
-
-
 .Background {
-
   .ant-breadcrumb ol {
     font-size: 20px;
   }
@@ -24,10 +25,12 @@
 
 .UpdateModal.ant-modal {
   .ant-modal-content {
+    padding: 0;
     .ant-modal-body {
       background: url(https://cdn.dribbble.com/users/1044993/screenshots/3109403/media/bad56b541a367f711456b0a52bc1aa57.gif)
         no-repeat 50% / cover;
 
+      padding: 35px;
       .FormUpdate {
         > div {
           width: 100%;
@@ -36,8 +39,6 @@
     }
   }
 }
-
-
 
 .ant-dropdown {
   .ant-dropdown-menu.ant-dropdown-menu-root.ant-dropdown-menu-vertical {
@@ -48,6 +49,54 @@
       color: $colorBlack;
       &:hover {
         background-color: $colorBgPrimary;
+      }
+    }
+  }
+}
+
+.Content {
+  nav.ant-breadcrumb {
+    ol {
+      li.ant-breadcrumb-separator {
+        color: $colorWhite;
+      }
+    }
+  }
+}
+
+.ant-popconfirm {
+  .ant-popover-content {
+    .ant-popconfirm-message {
+      .ant-popconfirm-title,
+      .ant-popconfirm-description {
+        color: black;
+      }
+    }
+    .ant-btn-primary {
+      &:not(:disabled):not(.ant-btn-disabled) {
+        &:hover {
+          background-color: $colorGlobal;
+        }
+      }
+    }
+    .ant-btn-default {
+      &:not(:disabled):not(.ant-btn-disabled) {
+        &:hover {
+          color: $colorGlobal;
+          border-color: $colorGlobal;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .UpdateModal.ant-modal {
+    height: 100%;
+    width: 85%;
+    .ant-modal-content {
+      .ant-modal-body {
+        padding: 5px;
       }
     }
   }

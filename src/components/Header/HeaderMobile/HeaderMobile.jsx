@@ -1,4 +1,4 @@
-import React, { useEffect, useRef} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { SearchOutlined } from "@ant-design/icons";
@@ -7,12 +7,14 @@ import { logo } from "../../../assets/img/js/img";
 import UserNavMobile from "./UserNavMobile/UserNavMobile";
 import { getCourseCategoryAction } from "../../../redux/courseReducer/courseSlice";
 import { courseService } from "../../../services/courseService";
+import { handleSubmitSearch } from "../../../utils";
 
 export default function HeaderMobile() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   let keyInputMobile = useRef(null);
   const scrollDirection = ScrollHeader();
+  const [searchVisible, setSearchVisible] = useState(false);
   const { infoUser } = useSelector((state) => state.userReducer);
   const coursesCate = useSelector(
     (state) => state.courseReducer.coursesCategory
@@ -32,11 +34,9 @@ export default function HeaderMobile() {
   };
 
   const handleSubmitSearchMobile = (e) => {
-    e.preventDefault();
-    if (keyInputMobile.current.value !== "") {
-      navigate(`/timkiem/${keyInputMobile.current.value}`);
-      keyInputMobile.current.value = "";
-    }
+    handleSubmitSearch(e, keyInputMobile, navigate, () => {
+      setSearchVisible(false);
+    });
   };
 
   useEffect(() => {
@@ -50,25 +50,37 @@ export default function HeaderMobile() {
       } py-2 z-30 shadow-md Header`}
     >
       <div className="container mx-auto flex justify-between items-center px-3">
-        <NavLink to={"/"} >
+        <NavLink to={"/"}>
           <img src={logo[0]} width={100} alt="" />
         </NavLink>
-        <form onSubmit={handleSubmitSearchMobile} className="HeaderSearch w-3/5 flex">
+
+        <button
+          type="submit"
+          onClick={() => {
+            setSearchVisible(!searchVisible);
+          }}
+        >
+          <SearchOutlined className="text-xl text-white" />
+        </button>
+        <div>{renderUserNavMobile()}</div>
+      </div>
+
+      {searchVisible && (
+        <form
+          onSubmit={handleSubmitSearchMobile}
+          className="HeaderSearch lg:px-12 container mx-auto px-3 flex mt-3"
+        >
           <input
             ref={keyInputMobile}
-            className="w-full border border-solid border-[#f3f4f6] h-11 rounded-l-lg p-5 text-base focus:outline-none bg-[#f6f9fa]"
+            className="w-full text-black h-11 rounded-l-lg p-5 text-base focus:outline-none"
             type="text"
             placeholder="Tìm kiếm"
           />
-          <button
-            type="submit"
-            className="BtnGlobal"
-          >
-            <SearchOutlined className="text-xl mr-1" />
+          <button type="submit" className="flex items-center BtnGlobal ">
+            <SearchOutlined className="text-xl mr-1 " />
           </button>
         </form>
-        <div>{renderUserNavMobile()}</div>
-      </div>
+      )}
     </div>
   );
 }

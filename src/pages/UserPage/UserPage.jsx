@@ -7,8 +7,14 @@ import ModalContent from "./ModalContent/ModalContent";
 import { getInfoUserThunk } from "../../redux/userReducer/userThunk";
 import { useDispatch, useSelector } from "react-redux";
 import CardHorizontal from "../../components/CardCustom/CardHorizontal/CardHorizontal";
+import CardVertical from "../../components/CardCustom/CardVertical/CardVertical";
 import ButtonPagination from "../../components/ButtonPagination/ButtonPagination";
-import { ResponsiveLargeScreen } from "../../HOC/responsive";
+import {
+  ResponsiveLargeScreen,
+  ResponsiveMiddleScreen,
+  ResponsiveSmallScreen,
+} from "../../HOC/responsive";
+import usePagination from "../../utils/pagination/usePagination";
 
 const UserInfoPage = () => {
   const location = useLocation();
@@ -16,15 +22,25 @@ const UserInfoPage = () => {
   const keyInput = useRef();
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
   const tabState = state?.currentTab || "info";
   const [currentTab, setCurrentTab] = useState(tabState);
   const [searchValue, setSearchValue] = useState("");
   const { infoUser } = useSelector((state) => state.userReducer);
+  const { userCoursesRegister } = useSelector((state) => state.courseReducer);
 
-  const { infoUserCourseRegister } = useSelector(
-    (state) => state.courseReducer
+  let itemsPerPage = 12;
+  let courseRegister = infoUser?.chiTietKhoaHocGhiDanh || [];
+
+  const filteredCourses = courseRegister.filter((course) =>
+    course?.tenKhoaHoc.includes(searchValue)
   );
+
+  const {
+    currentPage,
+    totalPages,
+    handlePageChange,
+    paginatedItems: paginatedCourses,
+  } = usePagination(filteredCourses, itemsPerPage);
 
   let showModal = () => {
     setIsModalOpen(true);
@@ -37,16 +53,9 @@ const UserInfoPage = () => {
     setIsModalOpen(false);
   };
 
-  let totalPages = Math.ceil(infoUser?.chiTietKhoaHocGhiDanh?.length / 7);
-
-  let fetchApi = () => {
-    dispatch(getInfoUserThunk());
-  };
-
   let renderModal = () => {
     return (
       <Modal
-        styles={{ body: { padding: "35px" }, content: { padding: 0 } }}
         width={540}
         open={isModalOpen}
         onOk={handleOk}
@@ -63,29 +72,37 @@ const UserInfoPage = () => {
     setCurrentTab(tab);
   };
 
-  let handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  let renderCourseRegister = () => {
-    const start = (currentPage - 1) * 7;
-    const end = start + 7;
-    return infoUser?.chiTietKhoaHocGhiDanh
-      ?.slice(start, end)
-      ?.map((course, index) => {
-        if (course?.tenKhoaHoc.includes(searchValue)) {
-          return <CardHorizontal key={index} course={course} number={[7, 5]} />;
+  let renderCourseRegister = (layout) => {
+    if (courseRegister.length === 0) {
+      return <p className="Error">Bạn chưa đăng ký khóa học nào</p>;
+    } else if (filteredCourses.length === 0 && searchValue.length > 0) {
+      return (
+        <p className="Error">
+          Không tìm thấy khóa học nào phù hợp với từ khóa của bạn.
+        </p>
+      );
+    } else {
+      return paginatedCourses.map((course, index) => {
+        switch (layout) {
+          case "horizontal":
+            return (
+              <CardHorizontal key={index} course={course} type={"cancel"} />
+            );
+          default:
+            return <CardVertical key={index} course={course} type={"cancel"} />;
         }
       });
+    }
   };
 
   let handleChangeSearch = (e) => {
     setSearchValue(e.target.value);
+    handlePageChange(1);
   };
 
   useEffect(() => {
-    fetchApi();
-  }, [infoUserCourseRegister]);
+    dispatch(getInfoUserThunk());
+  }, [userCoursesRegister]);
 
   useEffect(() => {
     setCurrentTab(tabState);
@@ -97,12 +114,12 @@ const UserInfoPage = () => {
         path={[
           {
             href: pathname,
-            title: <span className="text-blue-700">Thông tin nguời dùng</span>,
+            title: <span className="text-blue-400">Thông tin nguời dùng</span>,
           },
         ]}
       />
 
-      <div className="container mx-auto lg:p-12 py-12">
+      <div className="container mx-auto lg:px-12 px-3 py-12">
         <div className="User flex">
           <ResponsiveLargeScreen>
             <div className="w-1/3">
@@ -136,8 +153,8 @@ const UserInfoPage = () => {
                   currentTab === "info" ? "Active" : ""
                 } `}
               >
-                <div className="grid grid-cols-2">
-                  <div className="">
+                <div className="grid sm:grid-cols-2 grid-cols-1">
+                  <div>
                     <p>
                       Email:<span>{infoUser?.email}</span>
                     </p>
@@ -174,21 +191,23 @@ const UserInfoPage = () => {
               </div>
 
               <div
-                className={`Course TabContent ${
+                className={`TabContent ${
                   currentTab === "course" ? "Active" : ""
                 }`}
               >
-                <section className="flex justify-between items-center bg-gray-300 mb-3 p-3">
-                  <h6 className="font-bold text-xl">Khóa học của tôi</h6>
+                <section className="flex justify-between items-center bg-[#f6f9fa] mb-3 p-3">
+                  <h6 className="font-bold sm:text-xl w-1/2 ">
+                    Khóa học của tôi
+                  </h6>
                   <div className="flex">
                     <input
                       ref={keyInput}
-                      className="w-full text-black border border-solid border-slate-300 h-11 rounded-l-lg p-5 text-base focus:outline-none  bg-gray-100"
+                      className="w-full text-black border border-solid h-11 rounded-l-lg p-5 text-base focus:outline-none"
                       type="text"
                       placeholder="Tìm kiếm"
                       onChange={handleChangeSearch}
                     />
-                    <div className="bg-blue-700 flex justify-center  w-2/3 rounded-r-lg">
+                    <div className="BtnGlobal BtnSearch flex justify-center">
                       <button
                         type="submit"
                         className="border-none flex items-center text-white  "
@@ -199,20 +218,19 @@ const UserInfoPage = () => {
                   </div>
                 </section>
 
-                <div className="grid grid-cols-1">{renderCourseRegister()}</div>
-                <nav className="Pagination">
-                  <ul className="flex justify-end">
-                    {totalPages > 1 ? (
-                      <ButtonPagination
-                        currentPage={currentPage}
-                        handlePageChange={handlePageChange}
-                        totalPages={totalPages}
-                      />
-                    ) : (
-                      ""
-                    )}
-                  </ul>
-                </nav>
+                <div className="grid grid-cols-1">
+                  <ResponsiveMiddleScreen>
+                    {renderCourseRegister("horizontal")}
+                  </ResponsiveMiddleScreen>
+                  <ResponsiveSmallScreen>
+                    {renderCourseRegister("vertical")}
+                  </ResponsiveSmallScreen>
+                </div>
+                <ButtonPagination
+                  currentPage={currentPage}
+                  handlePageChange={handlePageChange}
+                  totalPages={totalPages}
+                />
               </div>
             </div>
           </div>

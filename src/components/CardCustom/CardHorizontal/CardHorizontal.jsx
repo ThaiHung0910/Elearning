@@ -6,10 +6,9 @@ import {
   registerCourseThunk,
 } from "../../../redux/courseReducer/courseThunk";
 import { useDispatch, useSelector } from "react-redux";
-import { ResponsiveMiddleScreen } from "../../../HOC/responsive";
 import ConfirmAction from "../../ConfirmAction/ConfirmAction";
 
-const CardHorizontal = ({ course, number, type }) => {
+const CardHorizontal = ({ course, type }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { maKhoaHoc } = course;
@@ -33,7 +32,6 @@ const CardHorizontal = ({ course, number, type }) => {
         }}
         button={<button className="BtnGlobal">Đăng ký</button>}
         infoUser={infoUser}
-        confirmMessage={"Đăng ký thành công"}
         requiredMessage={"Vui lòng đăng nhập để đăng ký khóa học"}
       />
     ) : (
@@ -45,7 +43,6 @@ const CardHorizontal = ({ course, number, type }) => {
         }}
         button={<button className="BtnGlobal">Hủy đăng ký</button>}
         infoUser={infoUser}
-        confirmMessage={"Hủy đăng ký thành công"}
       />
     );
   };
@@ -55,13 +52,12 @@ const CardHorizontal = ({ course, number, type }) => {
       <div className="Wrapper relative">
         <img
           src={course?.hinhAnh}
-          onClick={() => navigate(path)}
           onError={(e) => {
             e.target.onerror = null;
             e.target.src = imageNotFound;
           }}
           alt=""
-          className="Img cursor-pointer"
+          className="Img"
         />
 
         <div className="Avatar">
@@ -77,8 +73,8 @@ const CardHorizontal = ({ course, number, type }) => {
         <div className="space-y-3 py-2">
           <h2 className="font-bold">{course?.tenKhoaHoc}</h2>
           <p>
-            {course?.moTa.split(" ").length > 20
-              ? course?.moTa.split(" ").slice(0, 20).join(" ") + "..."
+            {course?.moTa.split(" ").length > 10
+              ? course?.moTa.split(" ").slice(0, 10).join(" ") + "..."
               : course?.moTa}
           </p>
 
@@ -90,24 +86,22 @@ const CardHorizontal = ({ course, number, type }) => {
 
             <div>
               <p>
-                {number[0]}00.000<sup>đ</sup>
+                700.000<sup>đ</sup>
               </p>
               <p>
-                {number[1]}00.000<sup>đ</sup>
+                500.000<sup>đ</sup>
                 <i className="fas fa-tag iconTag"></i>
               </p>
             </div>
 
             <div>
               {renderButton()}
-              <ResponsiveMiddleScreen>
-                <button
-                  onClick={() => navigate(path)}
-                  className="BtnGlobal ml-2"
-                >
-                  Xem chi tiết
-                </button>
-              </ResponsiveMiddleScreen>
+              <button
+                onClick={() => navigate(path)}
+                className="BtnGlobal ml-2"
+              >
+                Xem chi tiết
+              </button>
             </div>
           </div>
         </div>

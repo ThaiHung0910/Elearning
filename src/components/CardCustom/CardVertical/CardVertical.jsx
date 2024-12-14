@@ -5,11 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { avatar, background, imageNotFound } from "../../../assets/img/js/img";
 import ModalContent from "./ModalContent/ModalContent";
-import { registerCourseThunk } from "../../../redux/courseReducer/courseThunk";
+import {
+  registerCourseThunk,
+  cancelCourseThunk,
+} from "../../../redux/courseReducer/courseThunk";
 import { ResponsiveLargeScreen } from "../../../HOC/responsive";
 import ConfirmAction from "../../ConfirmAction/ConfirmAction";
-
-const CardVertical = ({ course, number, isFavorite }) => {
+const CardVertical = ({ course, isFavorite, type }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -55,6 +57,38 @@ const CardVertical = ({ course, number, isFavorite }) => {
           />
         </div>
       </Modal>
+    );
+  };
+
+  let renderButton = () => {
+    let params = {
+      maKhoaHoc: course.maKhoaHoc,
+      taiKhoan: infoUser?.taiKhoan,
+    };
+
+    return type === "cancel" ? (
+      <ConfirmAction
+        title={"Hủy khóa học"}
+        description={"Bạn xác nhận hủy khóa học này?"}
+        action={() => {
+          dispatch(cancelCourseThunk(params));
+        }}
+        button={
+          <button className="BtnGlobal BtnVertical">Hủy đăng ký</button>
+        }
+        infoUser={infoUser}
+      />
+    ) : (
+      <ConfirmAction
+        title={"Đăng ký khóa học"}
+        description={"Bạn xác nhận đăng ký khóa học này?"}
+        action={() => {
+          dispatch(registerCourseThunk(params));
+        }}
+        button={<button className="BtnGlobal BtnVertical">Đăng ký</button>}
+        infoUser={infoUser}
+        requiredMessage={"Vui lòng đăng nhập để đăng ký khóa học"}
+      />
     );
   };
 
@@ -119,10 +153,10 @@ const CardVertical = ({ course, number, isFavorite }) => {
           </div>
           <div>
             <p>
-              {number[0]}00.000<sup>đ</sup>
+              700.000<sup>đ</sup>
             </p>
             <p>
-              {number[1]}00.000<sup>đ</sup>
+              500.000<sup>đ</sup>
               <i className="fas fa-tag IconTag"></i>
             </p>
           </div>
@@ -134,23 +168,7 @@ const CardVertical = ({ course, number, isFavorite }) => {
           </div>
         )}
       </Card>
-
-      <ConfirmAction
-        title={"Đăng ký khóa học"}
-        description={"Bạn xác nhận đăng ký khóa học này?"}
-        action={() => {
-          dispatch(
-            registerCourseThunk({
-              maKhoaHoc: course.maKhoaHoc,
-              taiKhoan: infoUser?.taiKhoan,
-            })
-          );
-        }}
-        button={<button className="ButtonRegister BtnGlobal">Đăng ký</button>}
-        infoUser={infoUser}
-        confirmMessage={"Đăng ký thành công"}
-        requiredMessage={"Vui lòng đăng nhập để đăng ký khóa học"}
-      />
+      {renderButton()}
 
       <ResponsiveLargeScreen>
         <button onClick={showModal} className="IconInfo">
